@@ -12,3 +12,15 @@ document.addEventListener('keydown', function(event) {
 document.onload = function() {
   alert("Spam Ctrl+R until the page loads. This will bypass the script.");
 };
+
+/// darkmode.js
+document.onload = function() {
+  const darkModeStyle = document.createElement('style');
+  darkModeStyle.textContent = `
+    body {
+      background-color: black;
+      color: white;
+    }
+  `;
+  document.body.appendChild(darkModeStyle);
+};
