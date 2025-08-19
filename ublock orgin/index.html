@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MilkCat03's Bookmarklets</title>
+  <style>
+    .code{
+        background-color:black;
+        color:green;
+    }
+  </style>
+</head>
+<body>
+    <h1>Modifying Ublock Origin from: <a href="https://www.xaloez.com/blog/UblockOriginScriptlets/index.html">xaloez.com</a></h1>
+    <p>
+        Add raw url to userResourcesLocation
+    </p>
+    <h2>Structure:</h2>
+    <p class="code">
+        /// ExampleScript.js
+        console.log("Hello I'm running via scriptlet injection.");
+    </p>
+    <h2>Add this to "My Filters"</h2>
+    <p class="code">
+        *##+js(ExampleScript.js)
+    </p>
+    <p>
+        * is a wildcard, you can add any website.
+    </p>
+
+    <h1>Link to my scripts: <a href="/ublock orgin/Combined Scripts.js">click</a></h1>
+</body>
+</html>
