@@ -1,5 +1,5 @@
 document.addEventListener('keydown', function(event) {
-  if (event.key === '`' || event.keyCode === 192) { 
+  if (event.key === '`' || event.keyCode === 192) { // backtick/tilde
     const userInput = prompt("What script would you like to execute?");
     let payload = userInput;
 
