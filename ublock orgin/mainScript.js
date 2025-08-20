@@ -2,7 +2,6 @@ function external() {
     const newWindow = window.open('', '', 'width=1200,height=800');
     const doc = newWindow.document;
 
-    // Reset styles for full-bleed layout
     doc.body.style.margin = '0';
     doc.body.style.padding = '0';
     doc.body.style.overflow = 'hidden';
@@ -13,11 +12,10 @@ function external() {
 
     const link = doc.createElement('link');
     link.rel = 'icon';
-    link.href = 'https://google.com/favicon.ico'; // your favicon URL
+    link.href = 'https://google.com/favicon.ico';
     link.type = 'image/x-icon';
     doc.head.appendChild(link);
 
-    // Create a container for search
     const searchBar = doc.createElement('div');
     searchBar.style.display = 'flex';
     searchBar.style.alignItems = 'center';
@@ -25,7 +23,6 @@ function external() {
     searchBar.style.backgroundColor = '#1e1e1e';
     searchBar.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
 
-    // Prefix label (non-editable "https://")
     const prefix = doc.createElement('span');
     prefix.textContent = 'https://';
     prefix.style.padding = '8px';
@@ -35,7 +32,6 @@ function external() {
     prefix.style.color = '#bbbbbb';
     prefix.style.userSelect = 'none';
 
-    // Input field (user types only after https://)
     const input = doc.createElement('input');
     input.type = 'text';
     input.placeholder = 'example.com';
@@ -48,7 +44,6 @@ function external() {
     input.style.backgroundColor = '#2a2a2a';
     input.style.color = '#ffffff';
 
-    // Search button
     const button = doc.createElement('button');
     button.textContent = 'Go';
     button.style.marginLeft = '8px';
@@ -59,14 +54,12 @@ function external() {
     button.style.backgroundColor = '#3a3a3a';
     button.style.color = '#ffffff';
 
-    // Iframe
     const iframe = doc.createElement('iframe');
     iframe.style.width = '100%';
-    iframe.style.height = 'calc(100vh - 50px)'; // subtract search bar height
+    iframe.style.height = 'calc(100vh - 50px)';
     iframe.style.border = 'none';
     iframe.src = 'https://wikipedia.org';
 
-    // Function to handle search
     function doSearch() {
         let query = input.value.trim();
         if (!query) return;
@@ -78,7 +71,6 @@ function external() {
         if (e.key === 'Enter') doSearch();
     });
 
-    // Assemble
     searchBar.appendChild(prefix);
     searchBar.appendChild(input);
     searchBar.appendChild(button);
