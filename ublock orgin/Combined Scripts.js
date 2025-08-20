@@ -1,6 +1,6 @@
 /// executeScripts.js
 document.addEventListener('keydown', function(event) {
-  if (event.key === '\\' || event.keyCode === 220) {
+  if ((event.ctrlKey && (event.key === '-' || event.keyCode === 189))) {
     const userInput = prompt("What script would you like to execute?");
     const script = document.createElement('script');
     script.textContent = userInput;
@@ -8,19 +8,11 @@ document.addEventListener('keydown', function(event) {
   }
 });
 
-/// bypass.js
-document.onload = function() {
-  alert("Spam Ctrl+R until the page loads. This will bypass the script.");
-};
-
-/// darkmode.js
-document.onload = function() {
-  const darkModeStyle = document.createElement('style');
-  darkModeStyle.textContent = `
-    body {
-      background-color: black;
-      color: white;
-    }
-  `;
-  document.body.appendChild(darkModeStyle);
-};
+/// popup.js
+document.addEventListener('keydown', function(event) {
+  if ((event.ctrlKey && (event.key === '=' || event.keyCode === 187))) {
+    const script = document.createElement('script');
+    script.textContent = "";
+    document.body.appendChild(script);
+  }
+});
