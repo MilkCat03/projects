@@ -1,46 +1,304 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>test</title>
+<head>
+  <title>test</title>
+  <style>
+    #popup {
+      position: absolute;
+      background-color: black;
+      width: 500px;
+      height: 375px;
+      top: 100px;
+      left: 100px;
+      color: white;
+      font-family: monospace;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #444;
+    }
 
-        <style>
-            #popup{
-                
+    #commandWindow {
+      background-color: rgb(78, 78, 78);
+      width: 100%;
+      height: 25px;
+      cursor: move;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 5px;
+      box-sizing: border-box;
+    }
+
+    .window-btn {
+      width: 20px;
+      height: 20px;
+      margin-left: 5px;
+      background-color: #333;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 12px;
+      line-height: 20px;
+      text-align: center;
+    }
+    .window-btn:hover {
+      background-color: #555;
+    }
+
+    #log {
+      flex: 1;
+      padding: 5px;
+      overflow-y: auto;
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+
+    #inputRow {
+      display: flex;
+      background-color: rgb(30, 30, 30);
+      padding: 5px;
+      flex-shrink: 0;
+    }
+
+    #commandInput {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: white;
+      outline: none;
+      font-size: 14px;
+    }
+
+    #submitBtn {
+      background-color: rgb(78, 78, 78);
+      color: white;
+      border: none;
+      padding: 0 12px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    #submitBtn:hover {
+      background-color: rgb(100, 100, 100);
+    }
+
+    #restoreCircle {
+        position: fixed;            
+        bottom: 20px;               
+        right: 20px;                
+        width: 50px;                
+        height: 50px;
+        background-color: blue;
+        border-radius: 15px;        
+        cursor: pointer;
+        display: none;              
+        background-image: url("https://content.paper.co/hubfs/PAPER_SQUARELOGO_blue.png"); 
+        background-size: cover;
+        background-position: center;
+        border: 2px solid white;
+    }
+  </style>
+</head>
+<body>
+  <div id="popup">
+    <div id="commandWindow">
+      <button class="window-btn" id="minBtn">–</button>
+    </div>
+    <div id="log"></div>
+    <div id="inputRow">
+      <input id="commandInput" placeholder="insert command" />
+      <button id="submitBtn">&gt;</button>
+    </div>
+  </div>
+
+  <!-- Blue circle to restore window -->
+  <div id="restoreCircle"></div>
+
+  <script>
+    const popup = document.getElementById("popup");
+    const commandWindow = document.getElementById("commandWindow");
+    const log = document.getElementById("log");
+    const input = document.getElementById("commandInput");
+    const submitBtn = document.getElementById("submitBtn");
+    const minBtn = document.getElementById("minBtn");
+    const restoreCircle = document.getElementById("restoreCircle");
+
+    let isDragging = false;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    commandWindow.addEventListener("mousedown", (e) => {
+      if (e.target.classList.contains("window-btn")) return; 
+      isDragging = true;
+      offsetX = e.clientX - popup.offsetLeft;
+      offsetY = e.clientY - popup.offsetTop;
+    });
+
+    document.addEventListener("mousemove", (e) => {
+      if (isDragging) {
+        popup.style.left = (e.clientX - offsetX) + "px";
+        popup.style.top = (e.clientY - offsetY) + "px";
+      }
+    });
+
+    document.addEventListener("mouseup", () => {
+      isDragging = false;
+    });
+
+    function submitCommand() {
+      const cmd = input.value.trim();
+      if (cmd) {
+        const entry = document.createElement("div");
+        entry.textContent = "> " + cmd;
+        log.appendChild(entry);
+        log.scrollTop = log.scrollHeight; 
+        input.value = "";
+        interpretCommand(cmd);
+      }
+    }
+
+    function interpretCommand(cmd) {
+        if (cmd === "web") {
+            const newWindow = window.open("", "", "width=1200,height=800");
+            if (!newWindow) {
+            alert("Popup blocked! Allow popups for this site.");
+            return;
             }
-        </style>
-    </head>
-    <body>
-        <div id="popup" style="background-color: black; width: 500px; height: 375px;">
-            <div id="commandWindow" style="background-color: rgb(78, 78, 78); width: 500px; height: 25px; z-index: 999;">
-            
-            </div>
-        </div>
-        <script>
-            var mousedown = false;
-            var mouseX = 0;
-            var mouseY = 0
-            var popup = document.getElementById("popup");
 
-            document.addEventListener("mousedown", function(event){
-                mousedown = true;
-                mouseX = event.clientX;
-                mouseY = event.clientY;
-                drag();
-            })
+            const doc = newWindow.document;
 
-            document.addEventListener("mouseup", function(event){
-                mousedown = false;
-                mouseX = event.clientX;
-                mouseY = event.clientY;
-                drag();
-            })
+            doc.title = "Google";
 
-            function drag () {
-                if (mousedown == true) {
-                    popup.style.top = mouseY + "px";
-                    popup.style.left = mouseX + "px";
-                }
+            const link = doc.createElement("link");
+            link.rel = "icon";
+            link.href = "https://www.google.com/favicon.ico";
+            link.type = "image/x-icon";
+            doc.head.appendChild(link);
+
+            doc.body.style.margin = "0";
+            doc.body.style.padding = "0";
+            doc.body.style.backgroundColor = "#121212";
+            doc.body.style.color = "#ffffff";
+            doc.body.style.fontFamily = "Arial, sans-serif";
+
+            const searchBar = doc.createElement("div");
+            searchBar.style.display = "flex";
+            searchBar.style.alignItems = "center";
+            searchBar.style.padding = "10px";
+            searchBar.style.backgroundColor = "#1e1e1e";
+            searchBar.style.boxShadow = "0 2px 4px rgba(0,0,0,0.5)";
+
+            const prefix = doc.createElement("span");
+            prefix.textContent = "https://";
+            prefix.style.padding = "8px";
+            prefix.style.backgroundColor = "#2a2a2a";
+            prefix.style.borderTopLeftRadius = "6px";
+            prefix.style.borderBottomLeftRadius = "6px";
+            prefix.style.color = "#bbbbbb";
+            prefix.style.userSelect = "none";
+
+            const input = doc.createElement("input");
+            input.type = "text";
+            input.placeholder = "example.com";
+            input.style.flex = "1";
+            input.style.padding = "8px";
+            input.style.border = "none";
+            input.style.borderLeft = "1px solid #444";
+            input.style.borderTopRightRadius = "6px";
+            input.style.borderBottomRightRadius = "6px";
+            input.style.backgroundColor = "#2a2a2a";
+            input.style.color = "#ffffff";
+
+            const button = doc.createElement("button");
+            button.textContent = "Go";
+            button.style.marginLeft = "8px";
+            button.style.padding = "8px 14px";
+            button.style.border = "none";
+            button.style.borderRadius = "6px";
+            button.style.cursor = "pointer";
+            button.style.backgroundColor = "#3a3a3a";
+            button.style.color = "#ffffff";
+
+            const iframe = doc.createElement("iframe");
+            iframe.style.width = "100%";
+            iframe.style.height = "calc(100vh - 50px)";
+            iframe.style.border = "none";
+            iframe.src = "https://www.wikipedia.org";
+
+            function go() {
+            const url = input.value.trim();
+            if (url) iframe.src = "https://" + url;
             }
-        </script>
-    </body>
+
+            button.addEventListener("click", go);
+            input.addEventListener("keydown", e => {
+            if (e.key === "Enter") go();
+            });
+
+            searchBar.appendChild(prefix);
+            searchBar.appendChild(input);
+            searchBar.appendChild(button);
+            doc.body.appendChild(searchBar);
+            doc.body.appendChild(iframe);
+        } else if (cmd.startsWith("script(") && cmd.endsWith(")")) {
+        try {
+
+            let code = cmd.slice(7, -1); 
+
+            if ((code.startsWith('"') && code.endsWith('"')) || (code.startsWith("'") && code.endsWith("'"))) {
+                code = code.slice(1, -1);
+            }
+
+            const result = eval(code);
+
+            const entry = document.createElement("div");
+            entry.textContent = "> " + cmd + "\n" + result;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+
+        } catch (err) {
+            const entry = document.createElement("div");
+            entry.textContent = "> " + cmd + "\nError: " + err.message;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        } else if (cmd === "help") {
+        const helpText = `
+Available commands:
+- web        → Opens a custom browser window
+- script("…") → Runs JavaScript code dynamically
+- help       → Shows this help message
+        `.trim();
+
+        const entry = document.createElement("div");
+        entry.textContent = helpText;
+        log.appendChild(entry);
+        log.scrollTop = log.scrollHeight;
+    } else {
+        const entry = document.createElement("div");
+        entry.textContent = "> " + cmd + "\nUnknown command. Type 'help' for a list of commands.";
+        log.appendChild(entry);
+        log.scrollTop = log.scrollHeight;
+    }
+
+    }
+
+    submitBtn.addEventListener("click", submitCommand);
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") submitCommand();
+    });
+
+    minBtn.addEventListener("click", () => {
+      popup.style.display = "none";
+      restoreCircle.style.display = "block";
+    });
+
+    restoreCircle.addEventListener("click", () => {
+      popup.style.display = "flex";
+      restoreCircle.style.display = "none";
+    });
+  </script>
+</body>
 </html>
